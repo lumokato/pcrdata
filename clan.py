@@ -67,4 +67,4 @@ def walk_clan(start_id: int):
     f.close
 
 if __name__ == "__main__":
-    walk_clan(0)
+    walk_clan(50)
