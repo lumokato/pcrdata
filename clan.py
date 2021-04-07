@@ -1,6 +1,7 @@
 from PCRClient import PCRClient, ApiException
 from os.path import dirname, join, exists
 import time, random
+import binascii
 
 client = PCRClient(1314202001949)
 client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
@@ -49,22 +50,20 @@ def query_clan(clan_id: int, outpath):
         elif 'message' in msg['server_error']:
             if msg['server_error']['message'] == '此行会已解散。\\n返回标题界面。':
                 return True
-    except KeyError:
-        f = open(outpath,'a')
-        f.write('查询到公会' + str(clan_id) + '时出错\n')
-        f.close()
+    except binascii.Error:
         return False
 
 def walk_clan(start_id: int):
     walk_id = start_id
-    while query_clan(walk_id, 'clanx.csv'):
-        if walk_id % 20 == 0:
-            time.sleep(random.randint(8,12))
-        walk_id += 1
-        time.sleep(0.2)
-    f = open(str(walk_id) + '.a', 'w')
-    f.write(' ')
-    f.close
+    while walk_id<44000:
+        if query_clan(walk_id, 'clanx.csv'):
+            if walk_id % 20 == 0:
+                time.sleep(random.randint(8,12))
+                print('Clan working on ' + str(walk_id))
+            walk_id += 1
+            time.sleep(0.2)
+        else:
+            time.sleep(20)
 
 if __name__ == "__main__":
-    walk_clan(50)
+    walk_clan(38387)
