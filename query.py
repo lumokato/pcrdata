@@ -1,6 +1,7 @@
 from PCRClient import PCRClient
 import time, random
 import binascii
+import csv, os
 
 # client = PCRClient(1314202001949) #佑树
 # client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
@@ -44,7 +45,7 @@ def query_clan(clan_id: int, outpath):
         if 'clan' in msg:
             detail = msg['clan']['detail']
             data = '{0},{1},{2},{3},{4},{5},{6},{7}\n'.format(detail['clan_name'], detail['clan_id'], detail['leader_name'], detail['join_condition'], detail['member_num'], detail['activity'], detail['grade_rank'], detail['current_period_ranking'])
-            f = open(outpath,'a')
+            f = open(outpath, 'a', encoding='utf8')
             f.write(data)
             f.close()
             return True
@@ -67,6 +68,24 @@ def walk_clan(start_id: int):
         else:
             time.sleep(20)
 
+#更新公会信息
+def refresh_clan(filename):
+    os.rename(filename, filename + '.bak')
+    walk_order = 1
+    with open(filename + '.bak', 'r', encoding="utf8") as csvfile:
+        lines = csv.reader(csvfile)
+        for line in lines:
+            if query_clan(int(line[1]), filename):
+                if walk_order % 20 == 0:
+                    time.sleep(random.randint(8,12))
+                    print('Clan working on ' + str(walk_order))
+                walk_order += 1
+                time.sleep(0.2)
+            else:
+                time.sleep(20)
+
+
 if __name__ == "__main__":
-    walk_clan(43216)
+    #walk_clan(43216)
+    refresh_clan('clan_top.csv')
     #query_clan_members(6686, 'members.csv')

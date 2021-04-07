@@ -19,24 +19,35 @@ def filter_clan(num: int):
     """
     根据输入的数字执行不同的指令
     1:筛选上次会战有排名的公会，并按排名顺序排列
-    2:
-    3:
-    4:
+    2:筛选前500的公会中，人数超过15人的公会
+    3:筛选前500未满员且任何人都可以加入的公会
     """
     filter_data = {}
     if num == 1:
         with open('clan_full.csv','r', encoding="utf8") as csvfile:
             lines = csv.reader(csvfile)
             for line in lines:
-                if line[6] != 0:
+                if line[6] != '0':
                     filter_data[int(line[6])] = line
         savepath = 'clan_withrank.csv'
+    elif num == 2:
+        with open('clan_withrank.csv','r', encoding="utf8") as csvfile:
+            lines = csv.reader(csvfile)
+            for line in lines:
+                if int(line[4]) > 14:
+                    filter_data[int(line[6])] = line
+        savepath = 'clan_top.csv'
+    elif num == 3:
+        with open('clan_top.csv','r', encoding="utf8") as csvfile:
+            lines = csv.reader(csvfile)
+            for line in lines:
+                if int(line[3]) == 1 and int(line[4]) < 30:
+                    filter_data[int(line[6])] = line
+        savepath = 'clan_in.csv'
     with open(savepath,'w', newline='', encoding="utf8") as csvfile:
         writer  = csv.writer(csvfile)
         for row in sorted(filter_data):
              writer.writerow(filter_data[row])
-    return 0
-
 
 if __name__ == "__main__":
-    filter_clan(1)
+    filter_clan(3)
