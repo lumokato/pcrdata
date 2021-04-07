@@ -1,5 +1,6 @@
 __pycache__/
 backup/
-#*.csv
+clan?.csv
+members.csv
 listen/
 unpack/

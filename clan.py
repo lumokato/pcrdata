@@ -2,8 +2,10 @@ from PCRClient import PCRClient, ApiException
 from os.path import dirname, join, exists
 import time, random
 import binascii
+import pandas
+import csv
 
-# client = PCRClient(1314202001949)
+# client = PCRClient(1314202001949) //佑树
 # client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
 client = PCRClient(1223950737906)
 client.login("2020061221263800100000", "d145b29050641dac2f8b19df0afe0e59")
@@ -36,6 +38,7 @@ def query_clan_members(clan_id: int, outpath):
         f.close()
         return False
 
+# 查询公会信息，并保存到指定文件中
 def query_clan(clan_id: int, outpath):
     try:
         msg = client.Callapi('/clan/others_info', {
@@ -54,10 +57,11 @@ def query_clan(clan_id: int, outpath):
     except binascii.Error:
         return False
 
+# 获取从start_id开始的公会信息
 def walk_clan(start_id: int):
     walk_id = start_id
-    while walk_id<44000:
-        if query_clan(walk_id, 'clanx.csv'):
+    while walk_id < 44000:
+        if query_clan(walk_id, 'clan.csv'):
             if walk_id % 20 == 0:
                 time.sleep(random.randint(8,12))
                 print('Clan working on ' + str(walk_id))
@@ -66,5 +70,20 @@ def walk_clan(start_id: int):
         else:
             time.sleep(20)
 
+# 拼接不同文件内的公会信息
+def add_walk_data():
+    rows = {}
+    for i in range(1,5):
+        with open('clan'+str(i)+'.csv', 'r', encoding="utf8") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                rows[int(row[1])] = ['"%s"'%row[0], row[1], '"%s"'%row[2], row[3], row[4], row[5], row[6], row[7]]
+    with open('full.csv','w', newline='', encoding="utf8") as csvfile:
+        writer  = csv.writer(csvfile)
+        for row in sorted(rows):
+             writer.writerow(rows[row])
+
 if __name__ == "__main__":
-    walk_clan(43216)
+    #walk_clan(43216)
+    query_clan(14495, 'members.csv')
+    #add_walk_data()
