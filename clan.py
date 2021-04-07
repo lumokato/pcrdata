@@ -3,9 +3,10 @@ from os.path import dirname, join, exists
 import time, random
 import binascii
 
-client = PCRClient(1314202001949)
-client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
-
+# client = PCRClient(1314202001949)
+# client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
+client = PCRClient(1223950737906)
+client.login("2020061221263800100000", "d145b29050641dac2f8b19df0afe0e59")
 def query_id(viewer_id: int):
     try:
         res = client.Callapi('/profile/get_profile', {
@@ -66,4 +67,4 @@ def walk_clan(start_id: int):
             time.sleep(20)
 
 if __name__ == "__main__":
-    walk_clan(38387)
+    walk_clan(43216)
