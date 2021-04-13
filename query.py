@@ -2,11 +2,10 @@ from PCRClient import PCRClient
 import time, random
 import binascii
 import csv, os
+import account as ac
 
-# client = PCRClient(1314202001949) #佑树
-# client.login("2020081016480401600000", "204ea6141f2eed91eb4a3df3d2c1b6e7")
-client = PCRClient(1223950737906)   
-client.login("2020061221263800100000", "d145b29050641dac2f8b19df0afe0e59")
+client = PCRClient(ac.viewer_id)
+client.login(ac.uid, ac.access_key)
 
 #查询指定id的用户信息
 def query_id(viewer_id: int):
@@ -44,7 +43,7 @@ def query_clan(clan_id: int, outpath):
             })
         if 'clan' in msg:
             detail = msg['clan']['detail']
-            data = '{0},{1},{2},{3},{4},{5},{6},{7}\n'.format(detail['clan_name'], detail['clan_id'], detail['leader_name'], detail['join_condition'], detail['member_num'], detail['activity'], detail['grade_rank'], detail['current_period_ranking'])
+            data = '\"""{0}\""",{1},\"""{2}\""",{3},{4},{5},{6},{7}\n'.format(detail['clan_name'], detail['clan_id'], detail['leader_name'], detail['join_condition'], detail['member_num'], detail['activity'], detail['grade_rank'], detail['current_period_ranking'])
             f = open(outpath, 'a', encoding='utf8')
             f.write(data)
             f.close()
@@ -59,7 +58,7 @@ def query_clan(clan_id: int, outpath):
 def walk_clan(start_id: int):
     walk_id = start_id
     while walk_id < 44000:
-        if query_clan(walk_id, 'clan.csv'):
+        if query_clan(walk_id, 'clan_full.csv'):
             if walk_id % 20 == 0:
                 time.sleep(random.randint(8,12))
                 print('Clan working on ' + str(walk_id))
@@ -84,8 +83,26 @@ def refresh_clan(filename):
             else:
                 time.sleep(20)
 
+#查询会战排名页数
+def get_page_status(page: int):
+    temp = client.Callapi('clan_battle/period_ranking', {'clan_id': ac.clan_id, 'clan_battle_id': -1, 'period': -1, 'month': 0, 'page': page, 'is_my_clan': 0, 'is_first': 1})
+    if 'period_ranking' not in temp:
+        client.login(ac.uid, ac.access_key)
+        temp = client.Callapi('clan_battle/period_ranking', {'clan_id': ac.clan_id, 'clan_battle_id': -1, 'period': -1, 'month': 0, 'page': page, 'is_my_clan': 0, 'is_first': 1})
+    return temp['period_ranking']
+
+#查询当前会战前排工会排名
+def query_clan_top(endrank: int):
+    for page in range(int(endrank/10)):
+        pagedata = get_page_status(page)
+        with open("clan_top" + str(endrank) + '.csv', 'a', encoding="utf8") as csvfile:
+            for detail in pagedata:
+                csvfile.write('\"""{0}\""",{1},{2}\n'.format(detail['clan_name'], detail['rank'], detail['grade_rank']))
+    return False
+
 
 if __name__ == "__main__":
-    #walk_clan(43216)
-    refresh_clan('clan_top.csv')
-    #query_clan_members(6686, 'members.csv')
+    #walk_clan(43280)
+    #refresh_clan('clan_top.csv')
+    #query_clan_members(5645, 'members.csv')
+    query_clan_top(300)
