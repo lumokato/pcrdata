@@ -102,7 +102,7 @@ def query_clan_top(endrank: int):
 
 
 if __name__ == "__main__":
-    #walk_clan(43280)
-    #refresh_clan('clan_top.csv')
+    #walk_clan(43281)
+    refresh_clan('clan_top.csv')
     #query_clan_members(5645, 'members.csv')
-    query_clan_top(300)
+    #query_clan_top(300)

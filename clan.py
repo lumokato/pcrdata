@@ -49,5 +49,38 @@ def filter_clan(num: int):
         for row in sorted(filter_data):
              writer.writerow(filter_data[row])
 
+#筛选top300中的新公会
+def filter_top():
+    clans_new = []
+    clans = []
+    with open('clan_top300.csv','r', encoding="utf8") as csvfile:
+        lines = csv.reader(csvfile)
+        for line in lines:
+            clans_new.append(line[0])
+    with open('clan_top.csv','r', encoding="utf8") as csvfile:
+        lines = csv.reader(csvfile)
+        for line in lines:
+            clans.append(line[0])
+    for clan in clans_new:
+        if clan not in clans:
+            with open("newclan.bak",'a', encoding="utf8") as f:
+                f.write(clan + '\n')
+                f.close()
+
+#将top300的公会对应id写入新文件
+def writein_top():
+    dic = {}
+    with open('clan_top.csv','r', encoding="utf8") as csvfile:
+        lines = csv.reader(csvfile)
+        for line in lines:
+            dic[line[0]] = line[1]
+    with open('clan_top300.csv','r', encoding="utf8") as csvfile:
+        lines = csv.reader(csvfile)
+        for line in lines:
+            if line[0] in dic.keys():
+                with open("clanid.csv",'a', encoding="utf8") as f:
+                    f.write(line[0] + "," + dic[line[0]] + "\n")
+
 if __name__ == "__main__":
-    filter_clan(3)
+    #filter_clan(3)
+    writein_top()
