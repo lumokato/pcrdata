@@ -1,8 +1,7 @@
 __pycache__/
 backup/
-clan?.csv
-members.csv
+clan/members.csv
 listen/
 unpack/
 *.bak
-account.py
+clan/account.py
