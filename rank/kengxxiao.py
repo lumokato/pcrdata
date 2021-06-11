@@ -42,7 +42,7 @@ def query_page(page: int, history_time: int):
         return False
 
 def time_date():
-    time_dict = {"412": 1618174807, "413": 1618261206, "414": 1618347606, "415": 1618434006, "416": 0}
+    time_dict = {"510": 1620594006, "511": 1620680406, "512": 1620766806, "513": 1620853206, "514": 0}
     return time_dict
 
 def page_to_csv(date: str, page_start: int, page_end: int):
@@ -127,14 +127,16 @@ def clan_minus_id():
     dam2 = read_damage_id("413")
     dam3 = read_damage_id("414")
     dam4 = read_damage_id("415")
+    dam5 = read_damage_id("416")
     dam_day1 = sorted(dam1.values(), reverse=True)
     dam_day2 = dict_minus(dam1, dam2)
     dam_day3 = dict_minus(dam2, dam3)
     dam_day4 = dict_minus(dam3, dam4)
-    clan_num = min([len(dam_day1), len(dam_day2), len(dam_day3), len(dam_day4)])
+    dam_day5 = dict_minus(dam4, dam5)
+    clan_num = min([len(dam_day1), len(dam_day2), len(dam_day3), len(dam_day4), len(dam_day5)])
     with open('./rank/damage_byclan.csv','w', encoding="utf8") as csvfile:
         for i in range(clan_num):
-            csvfile.write(dam_day1[i]+','+str(dam_day2[i])+','+str(dam_day3[i])+','+str(dam_day4[i])+'\n')
+            csvfile.write(dam_day1[i]+','+str(dam_day2[i])+','+str(dam_day3[i])+','+str(dam_day4[i])+','+str(dam_day5[i])+'\n')
     csvfile.close()
 
 def clan_minus_rank():
@@ -155,6 +157,6 @@ def clan_minus_rank():
     csvfile.close()
 
 if __name__ == "__main__":
-    # page_to_csv("414",120,160)
-    # page_to_csv("416",0,160)
-    clan_minus_rank()
+    page_to_csv("609",0,160)
+    page_to_csv("610",0,160)
+    # clan_minus_id()

@@ -13,7 +13,8 @@ def decrypt(encrypted):
     cryptor=AES.new(key,mode, vi)
     plain_text  = cryptor.decrypt(ss2)
     try:
-        return msgpack.unpackb(plain_text)
+        return msgpack.unpackb(plain_text[:-plain_text[-1]],
+            strict_map_key = False)
     except msgpack.ExtraData as err:
         return err.unpacked
     except:
@@ -27,7 +28,8 @@ def decrypt_req(ss2):
     cryptor=AES.new(key,mode, vi)
     plain_text  = cryptor.decrypt(ss2)
     try:
-        return msgpack.unpackb(plain_text)
+        return msgpack.unpackb(plain_text[:-plain_text[-1]],
+            strict_map_key = False)
     except msgpack.ExtraData as err:
         return err.unpacked
     except:
@@ -43,6 +45,17 @@ def text_trans(inpath, outpath):
     line2 = str(decrypt(re.split(b'\r\n\r\n',data_res)[-1]))
     f = open(outpath,'w').write(line0 + '\n' + line1 + '\n' + line2 + '\n\n')
 
+def text_trans_nodecode(inpath, outpath):
+    filein = ''.join(open(inpath,'r').readlines())
+    cdata = re.findall(r'CDATA\[.+\]', filein)
+    line0 = cdata[0][6:-2]
+    data_req = base64.b64decode(bytes(cdata[3][6:-2], encoding='utf-8'))
+    line1 = ''
+    data_res = base64.b64decode(bytes(cdata[4][6:-2], encoding='utf-8'))
+    plain_text = re.split(b'\r\n\r\n',data_res)[-1]
+    line2 = str(plain_text, encoding="utf-8")
+    f = open(outpath,'w', encoding="utf-8").write(line0 + '\n' + line1 + '\n' + line2 + '\n\n')
+
 def text_pcr():
     rootDir = 'listen'
     for root, dirs, files in os.walk(rootDir):
@@ -53,6 +66,8 @@ def text_pcr():
 
 if __name__ == "__main__":
     text_pcr()
-    # inpath = 'listen\\logv4.xml'
-    # outpath = 'unpack\\logv4.json'
-    # text_trans(inpath, outpath)
+    # inpath = 'listen\\222.xml'
+    # outpath = 'unpack\\222.json'
+    # text_trans_nodecode(inpath, outpath)
+    # data = ''
+    # print(decrypt(data))
