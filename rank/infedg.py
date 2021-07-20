@@ -39,7 +39,7 @@ client = WebClient0()
 
 def query_date(date: str):
     try:
-        res = client.Callapi('/search/rank', {"filename":"qd/1/20210"+date+"0500", "search":"", "page":0, "page_limit":200})
+        res = client.Callapi('/search/rank', {"filename":"qd/1/20210"+date+"0530", "search":"", "page":0, "page_limit":200})
         return res
     except:
         return False
@@ -225,20 +225,20 @@ def rank_byqda():
     qd_day3 = []
     qd_day4 = []
     qd_data = []
-    with open('./rank/damage_qd2106.csv', 'r', encoding="utf8") as csvfile:
+    with open('./rank/damage_qd2107.csv', 'r', encoding="utf8") as csvfile:
         for line in csv.reader(csvfile):
             if line[0] != 'rank':
                 qd_day1.append(int(line[3]))
                 qd_day2.append(int(line[4]))
                 qd_day3.append(int(line[5]))
-                #qd_day4.append(int(line[6]))
+                qd_day4.append(int(line[6]))
         csvfile.close()
-    with open('./rank/damage_qd2106.csv', 'r', encoding="utf8") as csvfile:
+    with open('./rank/damage_qd2107.csv', 'r', encoding="utf8") as csvfile:
         for line in csv.reader(csvfile):
             if line[0] != 'rank':
-                qd_data.append('{0},{1},{2},{3},{4},{5}\n'.format(line[0], line[1], line[2], find_index(int(line[3]), sorted(qd_day1,reverse=True)), find_index(int(line[4]), sorted(qd_day2,reverse=True)), find_index(int(line[5]), sorted(qd_day3,reverse=True))))
+                qd_data.append('{0},{1},{2},{3},{4},{5},{6}\n'.format(line[0], line[1], line[2], find_index(int(line[3]), sorted(qd_day1,reverse=True)), find_index(int(line[4]), sorted(qd_day2,reverse=True)), find_index(int(line[5]), sorted(qd_day3,reverse=True)), find_index(int(line[6]), sorted(qd_day4,reverse=True))))
         csvfile.close()
-    with open('./rank/rank_qd2106.csv', 'w', encoding="utf8") as csvfile:
+    with open('./rank/rank_qd2107.csv', 'w', encoding="utf8") as csvfile:
         for line in qd_data:
             csvfile.write(line)
         csvfile.close()
@@ -271,9 +271,12 @@ def average_damage():
     print((damage_status(1375051245)-damage_status(607742210))/90)
 if __name__ == "__main__":
     #find_rank()
-    #page_to_csv("611")
-    minus_damage(["609", "610","611"], "damage_qd2106.csv")
-    minus_damage_avg(["609", "610","611"], "damage_avg_qd2106.csv")
+    page_to_csv("707")
+    page_to_csv("708")
+    page_to_csv("709")
+    page_to_csv("710")
+    minus_damage(["707","708","709","710"], "damage_qd2107.csv")
+    minus_damage_avg(["707","708","709","710"], "damage_avg_qd2107.csv")
     rank_byqda()
     #average_damage()
     #data = pd.read_csv('./rank/damage_qda.csv')

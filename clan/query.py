@@ -24,7 +24,7 @@ def query_clan_members(clan_id: int, clan_name:str, outpath):
     try:
         members = client.Callapi('/clan/others_info', {
                     'clan_id': clan_id
-                })#['clan']['members']
+                })['clan']['members']
         for mem in members:
             res0 = client.Callapi('/profile/get_profile', {
                 'target_viewer_id': int(mem['viewer_id'])
@@ -164,10 +164,11 @@ def query_test():
 if __name__ == "__main__":
     #walk_clan(43598)
     #refresh_clan('clan_top.csv')
-    #query_clan_members(3, "a", 'members.csv')
+    #query_clan_members(41878, "幻想夏乡", 'members.csv')
     #query_clan_top(200)
+    #query_clan(6686)
     #query_top_members_extra()
-    query_id(1262611243590)
+    query_id(1103859269183)
     #get_page_status(1)
     #read_json()
     #search_members()
